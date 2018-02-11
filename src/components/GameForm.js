@@ -1,9 +1,6 @@
 // @flow
 import React, { Component } from "react"
-import { connect } from "react-redux"
-import { Redirect } from "react-router-dom"
 import classnames from "classnames"
-import { saveGame } from "../actions/actions"
 
 type Props = {
   games: Array<string>,
@@ -12,11 +9,19 @@ type Props = {
 
 class GameForm extends Component<Props> {
   state = {
-    title: "",
-    cover: "",
+    _id: this.props.game ? this.props.game._id : null,
+    title: this.props.game ? this.props.game.title : "",
+    cover: this.props.game ? this.props.game.cover : "",
     errors: {},
-    loading: false,
-    done: false
+    loading: false
+  }
+
+  componentWillReceiveProps = nextProps => {
+    this.setState({
+      _id: nextProps.game._id,
+      title: nextProps.game.title,
+      cover: nextProps.game.cover
+    })
   }
 
   handleChange = e => {
@@ -40,17 +45,15 @@ class GameForm extends Component<Props> {
     const isValid = Object.keys(errors).length === 0
 
     if (isValid) {
-      const { title, cover } = this.state
+      const { _id, title, cover } = this.state
       this.setState({ loading: true })
-      this.props.saveGame({ title, cover }).then(
-        () => {
-          this.setState({ done: true })
-        },
-        err =>
+      this.props
+        .saveGame({ _id, title, cover })
+        .catch(err =>
           err.response
             .json()
             .then(({ errors }) => this.setState({ errors, loading: false }))
-      )
+        )
     }
   }
 
@@ -106,8 +109,8 @@ class GameForm extends Component<Props> {
         </div>
       </form>
     )
-    return <div>{this.state.done ? <Redirect to="/games" /> : form}</div>
+    return <div>{form}</div>
   }
 }
 
-export default connect(null, { saveGame })(GameForm)
+export default GameForm

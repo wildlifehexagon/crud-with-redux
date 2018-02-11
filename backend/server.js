@@ -30,16 +30,54 @@ mongodb.MongoClient.connect(dbUrl, function(err, db) {
 
     if (isValid) {
       const { title, cover } = req.body
-      db.db("crudwithredux").collection("games").insert({ title, cover }, (err, result) => {
-        if (err) {
-          res.status(500).json({ errors: { global: "Something went wrong" } })
-        } else {
-          res.json({ game: result.ops[0] })
-        }
-      })
+      db
+        .db("crudwithredux")
+        .collection("games")
+        .insert({ title, cover }, (err, result) => {
+          if (err) {
+            res.status(500).json({ errors: { global: "Something went wrong" } })
+          } else {
+            res.json({ game: result.ops[0] })
+          }
+        })
     } else {
       res.status(400).json({ errors })
     }
+  })
+
+  app.put("/api/games/:_id", (req, res) => {
+    const { errors, isValid } = validate(req.body)
+
+    if (isValid) {
+      const { title, cover } = req.body
+      db
+        .db("crudwithredux")
+        .collection("games")
+        .findOneAndUpdate(
+          { _id: new mongodb.ObjectId(req.params._id) },
+          { $set: { title, cover } },
+          { returnOriginal: false },
+          (err, result) => {
+            if (err) {
+              res.status(500).json({ errors: { global: err } })
+              return
+            }
+
+            res.json({ game: result.value })
+          }
+        )
+    } else {
+      res.status(400).json({ errors })
+    }
+  })
+
+  app.get("/api/games/:_id", (req, res) => {
+    db
+      .db("crudwithredux")
+      .collection("games")
+      .findOne({ _id: new mongodb.ObjectId(req.params._id) }, (err, game) => {
+        res.json({ game })
+      })
   })
 
   app.use((req, res) => {
