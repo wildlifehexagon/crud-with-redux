@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import GamesList from "./GamesList"
+import { Redirect } from "react-router-dom"
 import classnames from "classnames"
-import { fetchGames } from "../actions/actions"
+import { saveGame } from "../actions/actions"
 
 type Props = {
   games: Array<string>,
@@ -14,7 +14,9 @@ class GameForm extends Component<Props> {
   state = {
     title: "",
     cover: "",
-    errors: {}
+    errors: {},
+    loading: false,
+    done: false
   }
 
   handleChange = e => {
@@ -23,7 +25,7 @@ class GameForm extends Component<Props> {
       delete errors[e.target.name]
       this.setState({ [e.target.name]: e.target.value, errors })
     } else {
-        this.setState({ [e.target.name]: e.target.value })
+      this.setState({ [e.target.name]: e.target.value })
     }
   }
 
@@ -35,12 +37,36 @@ class GameForm extends Component<Props> {
     if (this.state.title === "") errors.title = "Can't be empty"
     if (this.state.cover === "") errors.cover = "Can't be empty"
     this.setState({ errors })
+    const isValid = Object.keys(errors).length === 0
+
+    if (isValid) {
+      const { title, cover } = this.state
+      this.setState({ loading: true })
+      this.props.saveGame({ title, cover }).then(
+        () => {
+          this.setState({ done: true })
+        },
+        err =>
+          err.response
+            .json()
+            .then(({ errors }) => this.setState({ errors, loading: false }))
+      )
+    }
   }
 
   render() {
-    return (
-      <form className="ui form" onSubmit={this.handleSubmit}>
+    const form = (
+      <form
+        className={classnames("ui", "form", { loading: this.state.loading })}
+        onSubmit={this.handleSubmit}
+      >
         <h1>Add New Game</h1>
+
+        {!!this.state.errors.global && (
+          <div className="ui negative message">
+            <p>{this.state.errors.global}</p>
+          </div>
+        )}
 
         <div
           className={classnames("field", { error: !!this.state.errors.title })}
@@ -80,7 +106,8 @@ class GameForm extends Component<Props> {
         </div>
       </form>
     )
+    return <div>{this.state.done ? <Redirect to="/games" /> : form}</div>
   }
 }
 
-export default GameForm
+export default connect(null, { saveGame })(GameForm)
