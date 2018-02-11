@@ -3,7 +3,8 @@ import React from "react"
 import { Link } from 'react-router-dom'
 
 type Props = {
-  game: Object
+  game: Object,
+  deleteGame: Function
 }
 
 const GameCard = (props: Props) => {
@@ -18,7 +19,7 @@ const GameCard = (props: Props) => {
       <div className="extra content">
         <div className="ui two buttons">
           <Link to={`/game/${props.game._id}`} className="ui basic button green">Edit</Link>
-          <div className="ui basic button red">Delete</div>
+          <div className="ui basic button red" onClick={() => props.deleteGame(props.game._id)}>Delete</div>
         </div>
       </div>
     </div>

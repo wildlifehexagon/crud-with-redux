@@ -3,7 +3,8 @@ import React from "react"
 import GameCard from './GameCard'
 
 type Props = {
-    games: Array<string>
+    games: Array<string>,
+    deleteGame: Function
 }
 
 const GamesList = (props: Props) => {
@@ -13,7 +14,7 @@ const GamesList = (props: Props) => {
 
     const gamesList = (
         <div className="ui four cards">
-            {props.games.map(game => <GameCard game={game} key={game._id} />)}
+            {props.games.map(game => <GameCard game={game} key={game._id} deleteGame={props.deleteGame} />)}
         </div>
     )
 
