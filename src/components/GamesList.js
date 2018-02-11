@@ -1,5 +1,6 @@
 // @flow
 import React from "react"
+import GameCard from './GameCard'
 
 type Props = {
     games: Array<string>
@@ -11,7 +12,9 @@ const GamesList = (props: Props) => {
     )
 
     const gamesList = (
-        <p>games list</p>
+        <div className="ui four cards">
+            {props.games.map(game => <GameCard game={game} key={game._id} />)}
+        </div>
     )
 
     return (
