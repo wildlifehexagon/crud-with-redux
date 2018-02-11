@@ -2,12 +2,17 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import GamesList from './GamesList'
+import { fetchGames } from '../actions/actions'
 
 type Props = {
-    games: Array<string>
+    games: Array<string>,
+    fetchGames: Function
 }
 
 class GamesPage extends Component<Props> {
+  componentDidMount() {
+    this.props.fetchGames()
+  }
   render() {
     return (
       <div>
@@ -25,4 +30,4 @@ const mapStateToProps: MapStateToProps<*, *, *> = state => {
   }
 }
 
-export default connect(mapStateToProps)(GamesPage)
+export default connect(mapStateToProps, { fetchGames })(GamesPage)
