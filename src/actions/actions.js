@@ -67,7 +67,7 @@ export function fetchGame(id) {
 
 export function updateGame(data) {
   return dispatch => {
-    return fetch(`/api/games/{data._id}`, {
+    return fetch(`/api/games/${data._id}`, {
       method: "put",
       body: JSON.stringify(data),
       headers: {
@@ -81,7 +81,7 @@ export function updateGame(data) {
 
 export function deleteGame(id) {
   return dispatch => {
-    return fetch(`/api/games/{id}`, {
+    return fetch(`/api/games/${id}`, {
       method: "delete",
       headers: {
         "Content-Type": "application/json"
