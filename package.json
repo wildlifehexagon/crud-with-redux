@@ -4,21 +4,26 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.5",
+    "concurrently": "^3.5.1",
     "flow-bin": "^0.65.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
+    "rebass": "^1.0.7",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "styled-components": "^3.1.6"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "npm run start --prefix backend",
+    "dev": "concurrently \"npm run start\" \"npm run server\""
   },
   "proxy": "http://localhost:8080"
 }
